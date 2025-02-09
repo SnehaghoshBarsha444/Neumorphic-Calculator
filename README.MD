@@ -1,7 +1,8 @@
-# Neumorphic Calculator
+## Neumorphic Calculator
 
 [![Vercel Deployment](https://img.shields.io/badge/Deployed%20on-Vercel-blue.svg)](https://neumorphic-calculator-sg-techisopod.vercel.app)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/SnehaghoshBarsha444/Neumorphic-Calculator)
+
 *A modern, soft UI calculator with a sleek neumorphic design.*
 
 ## 🚀 Overview
