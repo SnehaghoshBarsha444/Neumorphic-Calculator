@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Head section remains the same -->
+<head>
+    <!-- Previous head content remains unchanged -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neumorphic Calculator</title>
+    <meta name="description" content="Neumorphic Calculator || By SnehaGhosh (@Technical_Isopod_075)" />
+    <meta name="author" content="Think. Calculate. Solve." />
+    <meta property="og:image" content="favicon.ico" />
+     <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+     <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+     <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+     <link rel="manifest" href="favicon_io/site.webmanifest">
+    <meta property="og:image" content="/og-image.png" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* iOS height fix */
+            user-select: none;
+            background: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+        }
+
+        /* iOS Safari height fix */
+        html {
+            height: -webkit-fill-available;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 380px; /* Standard size for most mobile devices */
+            aspect-ratio: 0.75; /* Maintain 3:4 ratio similar to native calculators */
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 13px 13px 20px #000000,
+                       -13px -13px 20px #333333;
+            background: #ecf0f3;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .display {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .display #screen {
+            width: 100%;
+            height: 80px; /* Fixed height for display */
+            font-size: min(8vw, 35px); /* Responsive font size */
+            outline: none;
+            border: none;
+            text-align: right;
+            padding: 16px;
+            background: #ecf0f3;
+            border-radius: 10px;
+            box-shadow: inset 8px 8px 8px #cbced1,
+                       inset -8px -8px 8px #ffffff;
+            color: #333;
+        }
+
+        .btns {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .row button {
+            flex: 1;
+            aspect-ratio: 1/1;
+            font-size: min(4vw, 20px);
+            border: none;
+            outline: none;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px #cbced1,
+                       -5px -5px 8px #ffffff;
+            background: #ecf0f3;
+            color: #333;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .row button:active {
+            box-shadow: inset 5px 5px 8px rgba(16, 16, 16, .1),
+                       inset -5px -5px 8px #fff;
+            background: #fff;
+            transform: scale(0.95);
+        }
+
+        #eval {
+            background: #33ccff;
+            color: #fff;
+        }
+
+        #ac {
+            background: #33cc33;
+            color: #fff;
+        }
+
+        #ce {
+            background: #ff3399;
+            color: #fff;
+        }
+
+        [onclick^="sin"],
+        [onclick^="cos"],
+        [onclick^="tan"],
+        [onclick^="log"],
+        [onclick^="sqrt"],
+        [onclick^="pow"],
+        [onclick^="fact"],
+        [onclick^="pi"],
+        [onclick^="e"] {
+            background: #4a4a4a;
+            color: #fff;
+            font-size: min(3.5vw, 16px) !important;
+        }
+
+        .attribution {
+            color: #3674B5;
+            font-weight: 500;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
+            font-size: 14px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .attribution b {
+            font-weight: 700;
+        }
+
+        /* Portrait Mobile Optimization */
+        @media screen and (max-width: 380px) {
+            .container {
+                border-radius: 15px;
+                padding: 12px;
+            }
+
+            .row button {
+                border-radius: 8px;
+                font-size: 16px;
+            }
+
+            .display #screen {
+                height: 70px;
+                font-size: 28px;
+            }
+        }
+
+        /* Landscape Mode Prevention */
+        @media screen and (max-height: 500px) {
+            body {
+                min-height: 100vh;
+                padding: 10px;
+            }
+
+            .container {
+                aspect-ratio: 1.5;
+            }
+
+            .display #screen {
+                height: 60px;
+            }
+        }
+
+        /* Prevent text selection and long press popups */
+        button, input {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+    </style>
+</head>
+<body>
+   
+    <div class="container">
+        <div class="display">
+            <input id="screen" type="text" placeholder="0">
+        </div>
+
+        <div class="btns">
+            <div class="row">
+                <button id="ce" onclick="backspc()">CE</button>
+                <button onclick="fact()">x!</button>
+                <button class="btn">(</button>
+                <button class="btn">)</button>
+                <button onclick="calculatePercentage()">%</button>
+                <button id="ac" onclick="screen.value=''">AC</button>
+            </div>
+
+            <!-- Rest of the button rows remain unchanged -->
+            <div class="row">
+                <button onclick="sin()">sin</button>
+                <button onclick="pi()">π</button>
+                <button class="btn">7</button>
+                <button class="btn">8</button>
+                <button class="btn">9</button>
+                <button class="btn">÷</button>
+            </div>
+
+            <div class="row">
+                <button onclick="cos()">cos</button>
+                <button onclick="log()">log</button>
+                <button class="btn">4</button>
+                <button class="btn">5</button>
+                <button class="btn">6</button>
+                <button class="btn">×</button>
+            </div>
+
+            <div class="row">
+                <button onclick="tan()">tan</button>
+                <button onclick="sqrt()">√</button>
+                <button class="btn">1</button>
+                <button class="btn">2</button>
+                <button class="btn">3</button>
+                <button class="btn">-</button>
+            </div>
+
+            <div class="row">
+                <button onclick="e()">e</button>
+                <button onclick="pow()">x<span style="position: relative; bottom: .4em; right: .1em;">y</span></button>
+                <button class="btn">0</button>
+                <button class="btn">.</button>
+                <button id="eval" onclick="calculate()">=</button>
+                <button class="btn">+</button>
+            </div>
+        </div>
+        <div class="attribution">
+            © (Miss WebDesigner)<b>Sneha Ghosh</b>(@Technical_Isopod_075)
+        </div>
+    </div>
+
+    <script>
+        var screen = document.querySelector('#screen');
+        var btn = document.querySelectorAll('.btn');
+
+        // Mouse click handling
+        for (item of btn) {
+            item.addEventListener('click', (e) => {
+                btntext = e.target.innerText;
+                if (btntext == '×') {
+                    btntext = '*';
+                }
+                if (btntext == '÷') {
+                    btntext = '/';
+                }
+                screen.value += btntext;
+            });
+        }
+
+        // Keyboard input handling
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === 'Backspace' || e.key === 'Delete' || e.key === 'Escape') {
+                e.preventDefault();
+            }
+
+            if (/[\d\+\-\*\/\.\(\)]/.test(e.key)) {
+                screen.value += e.key;
+            }
+            else if (e.key === 'x' || e.key === 'X') {
+                screen.value += '*';
+            }
+            else if (e.key === '÷') {
+                screen.value += '/';
+            }
+            else if (e.key === '%') {
+                calculatePercentage();
+            }
+            else if (e.key === 'Backspace') {
+                backspc();
+            }
+            else if (e.key === 'Escape') {
+                screen.value = '';
+            }
+            else if (e.key === 'Enter') {
+                calculate();
+            }
+            // Function keys remain unchanged
+            else if (e.key === 's') sin();
+            else if (e.key === 'c') cos();
+            else if (e.key === 't') tan();
+            else if (e.key === 'l') log();
+            else if (e.key === 'p') pi();
+            else if (e.key === 'e') e();
+            else if (e.key === '!') fact();
+            else if (e.key === 'r') sqrt();
+            else if (e.key === '^') pow();
+        });
+
+        // Calculate percentage
+        function calculatePercentage() {
+            try {
+                let expression = screen.value;
+                
+                // If there's no operator, simply divide by 100
+                if (!/[\+\-\*\/]/.test(expression)) {
+                    screen.value = parseFloat(expression) / 100;
+                    return;
+                }
+
+                // Find the last number in the expression
+                let matches = expression.match(/([+\-*/]?\s*\d*\.?\d+)[%]?$/);
+                if (matches) {
+                    let lastNumber = matches[1];
+                    let operator = lastNumber.match(/^[+\-*/]/);
+                    
+                    // Remove the last number from expression
+                    let baseExpression = expression.slice(0, expression.lastIndexOf(lastNumber));
+                    
+                    // Calculate the percentage
+                    if (operator) {
+                        lastNumber = lastNumber.slice(1); // Remove operator
+                    }
+                    
+                    // Evaluate the base expression
+                    let baseValue = baseExpression ? eval(baseExpression) : 0;
+                    let percentage = (parseFloat(lastNumber) / 100) * baseValue;
+                    
+                    // Reconstruct the expression
+                    if (operator) {
+                        screen.value = baseValue + operator + percentage;
+                    } else {
+                        screen.value = percentage;
+                    }
+                }
+            } catch (error) {
+                screen.value = 'Error';
+                setTimeout(() => {
+                    screen.value = '';
+                }, 1500);
+            }
+        }
+
+        // Calculate final result
+        function calculate() {
+            try {
+                let expression = screen.value;
+                if (expression.includes('%')) {
+                    calculatePercentage();
+                } else {
+                    screen.value = eval(screen.value);
+                }
+            } catch (error) {
+                screen.value = 'Error';
+                setTimeout(() => {
+                    screen.value = '';
+                }, 1500);
+            }
+        }
+
+        // Previous calculator functions remain unchanged
+        function sin() {
+            screen.value = Math.sin(screen.value);
+        }
+
+        function cos() {
+            screen.value = Math.cos(screen.value);
+        }
+
+        function tan() {
+            screen.value = Math.tan(screen.value);
+        }
+
+        function pow() {
+            screen.value = Math.pow(screen.value, 2);
+        }
+
+        function sqrt() {
+            screen.value = Math.sqrt(screen.value, 2);
+        }
+
+        function log() {
+            screen.value = Math.log(screen.value);
+        }
+
+        function pi() {
+            screen.value = 3.14159265359;
+        }
+
+        function e() {
+            screen.value = 2.71828182846;
+        }
+
+        function fact() {
+            var i, num, f;
+            f = 1
+            num = screen.value;
+            for (i = 1; i <= num; i++) {
+                f = f * i;
+            }
+            i = i - 1;
+            screen.value = f;
+        }
+
+        function backspc() {
+            screen.value = screen.value.substr(0, screen.value.length - 1);
+        }
+    </script>
+</body>
+</html>
